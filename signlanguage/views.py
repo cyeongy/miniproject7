@@ -70,42 +70,17 @@ def upload(request):
             else:  
                 result.ret = '맞았습니다!'
             result.result = class_names[pred2[i]][0]
-            # print('pred2 : ', class_names[pred2[i]][0] )
-            
             result.save()
             resultList.append(result)
             
-        # return 할 결과
-    
-        # result = Result()
-        # result.answer = request.POST.getlist('answer[]')
-        # result.image = file
-        # result.pub_date = timezone.datetime.now()
-        
-       
-        # print('answer >> ', result.answer)
-        # print('answer len >> ', len(result.answer))
-        
-        # result.save()
         print("*"*50)
         
-        # if result.answer != class_names[pred2][0]:
-        #     result.ret = '틀렸습니다!'
-        # else:  
-        #     result.ret = '맞았습니다!'
-        
-        # print('result : ', class_names[pred2][0])
-        #todo 예측 결과를 DB에 저장한다.
-        # result.result = class_names[pred2][0]
-        # result.save()
-
+    
         context = {
             'resultList': resultList,
         }
 
-        #todo history 저장을 위해 객체에 담아서 DB에 저장한다.
-        # 이때 파일시스템에 저장도 된다.
-  
+    
 
     # http method의 GET은 처리하지 않는다. 사이트 테스트용으로 남겨둠.
     else:
