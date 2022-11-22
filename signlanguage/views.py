@@ -20,71 +20,87 @@ def index(request):
     return render(request, 'language/index.html')
 
 def upload(request):
-    if request.method == 'POST' and request.FILES['files']:
-
-        #todo form에서 전송한 파일을 획득한다.
-        file = request.FILES['files']
-        print('file >> ',file)
+    if request.method == 'POST' and request.FILES:
+        print('='*50)
+        print('1')
+        
+        # form 에서 받은 값 : file list, answer[]
+        file = request.FILES.getlist('files')
+        print('files >> ',file)
         print('file length >> ',len(file))
-        
-        logger.error('file', file)
-        
-        fs = FileSystemStorage(location='media/tmp', base_url='media/tmp')
-        filename = fs.save(file.name, file)
-        print("filename >> ", filename)
-        # class names 준비
+        print('file[0] >> ',file[0])
+       
+        # class names 준비 & model 불러오기
         class_names = list(string.ascii_lowercase)
         class_names = np.array(class_names)
-
-        print('class_names > ',class_names)
         model_path = settings.MODEL_DIR +'/sign_model.h5'
-        # model_path = 'C:\\dev\\aivle-sign-language\signlanguage\model\sign_model.h5'
-
-        model = load_model(model_path)
-        print("\n\n\n\ntmp file path >>>>",fs.url(filename))
+        model = load_model(model_path) 
         
+        # 파일 저장
+        pred2 = []
+        resultList = []
+        answers = request.POST.getlist('answer[]')
         
-        #todo 흑백으로 읽기
-        # model에서 ImageField로 처리된 항목은 ImageFieldFile 객체로 활용됩니다.
-        # 해당 객체에는 path를 얻어오는 method가 있습니다.
-
-        print("*1"*50)
-        #todo 크기 조정
+        for i,el in enumerate(file):
+            fs = FileSystemStorage(location='media/tmp', base_url='media/tmp')
+            filename = fs.save(file[i].name, file[i])
+            print('el : ', el)
+            print('filename : ',filename)
+            
+            # Upload Image 전처리
+            img = cv2.imread(fs.url(filename), cv2.IMREAD_GRAYSCALE)
+            img = cv2.resize(img, (28,28))
+            img = img.reshape(1,28,28,1)
+            img = img/255.
+            
+            # Predict
+            pred = model.predict(img) 
+            print("pred >>> ",pred.argmax(axis=1))
+            pred2.append(pred.argmax(axis=1))
+            
+            result = Result()
+            result.answer = answers[i]
+            result.image = file[i]
+            result.pub_date = timezone.datetime.now()
+            
+            print("result.answer : ",result.answer)
+            
+            if result.answer != class_names[pred2[i]][0]:
+                result.ret = '틀렸습니다!'
+            else:  
+                result.ret = '맞았습니다!'
+            result.result = class_names[pred2[i]][0]
+            # print('pred2 : ', class_names[pred2[i]][0] )
+            
+            result.save()
+            resultList.append(result)
+            
+        # return 할 결과
+    
+        # result = Result()
+        # result.answer = request.POST.getlist('answer[]')
+        # result.image = file
+        # result.pub_date = timezone.datetime.now()
         
-        #todo input shape 맞추기
-        img = cv2.imread(fs.url(filename), cv2.IMREAD_GRAYSCALE)
-        #todo 스케일링
-        img = cv2.resize(img, (28,28))
-        img = img.reshape(1,28,28,1)
-        img = img/255.
+       
+        # print('answer >> ', result.answer)
+        # print('answer len >> ', len(result.answer))
         
-        #todo 예측 : 결국 이 결과를 얻기 위해 모든 것을 했다.
-        # 예측 결과를 수행해보세요.
-        pred = model.predict(img) 
+        # result.save()
         print("*"*50)
-        pred2 = pred.argmax(axis=1)
-        print("pred >>> ",pred.argmax(axis=1))
-        print("*"*50)
         
-        result = Result()
-        # result.answer =model.predict(axis=)
-        result.answers = request.POST.get('answers','')
-        print('answers >> ', len(result.answers))
-        print("fs.url(filename) >> ",fs.url(filename)[0])
-        result.image = file
-        result.pub_date = timezone.datetime.now()
-        result.save()
-
-
+        # if result.answer != class_names[pred2][0]:
+        #     result.ret = '틀렸습니다!'
+        # else:  
+        #     result.ret = '맞았습니다!'
         
-        
-        print('result : ', class_names[pred2][0])
+        # print('result : ', class_names[pred2][0])
         #todo 예측 결과를 DB에 저장한다.
-        result.result = class_names[pred2][0]
-        result.save()
+        # result.result = class_names[pred2][0]
+        # result.save()
 
         context = {
-            'result': result,
+            'resultList': resultList,
         }
 
         #todo history 저장을 위해 객체에 담아서 DB에 저장한다.

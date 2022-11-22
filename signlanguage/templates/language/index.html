@@ -5,7 +5,7 @@
 <script>
     var idNum = 0;
     function addFile(){
-        html = '<span id="file_'+idNum+'"><fieldset><legend><h1>파일 업로드</h1></legend><input name="files" type="file"></fieldset><div> 정답 : <input name="answers" type="text"></div></span>';
+        html = '<span id="file_'+idNum+'"><fieldset><legend><h1>파일 업로드</h1></legend><input name="files" multiple="multiple" type="file"></fieldset><div> 정답 : <input name="answer[]" type="text"></div></span>';
         idNum++;
         
         $('#file').append(html)
@@ -19,10 +19,10 @@
     <span id="file">
         <fieldset>
             <legend><h1>파일 업로드</h1></legend>
-            <input name="files" type="file">
+            <input name="files" type="file" multiple="multiple">
         </fieldset>
         <div>
-            정답 : <input name="answer" type="text">
+            정답 : <input name="answer[]" type="text">
         </div>
     </span>
     <button onclick="addFile()" type="button">파일 추가 </button>
