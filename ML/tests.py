@@ -1,5 +1,4 @@
 from django.test import TestCase
-<<<<<<< HEAD
 from django.contrib.auth import get_user_model
 from .models import ML_Model
 from django.conf import settings
@@ -28,7 +27,3 @@ class Test_ML_Model(TestCase):
         print(test.created)
         print(test.file.path)
         print(test.file)
-=======
-
-# Create your tests here.
->>>>>>> eb2fa32 (Rebase commit)

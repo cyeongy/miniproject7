@@ -1,8 +1,6 @@
 from django.db import models
 
 # Create your models here.
-<<<<<<< HEAD
-=======
 class ML_Model(models.Model):
     title=models.CharField('TITLE', max_length=20)
     version=models.FloatField('VERSION')
@@ -15,4 +13,3 @@ class ML_Model(models.Model):
 
     def __str__(self):
         return self.title
->>>>>>> eb2fa32 (Rebase commit)
