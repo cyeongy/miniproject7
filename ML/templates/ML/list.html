@@ -6,5 +6,6 @@
     {% for model in model_all %}
         {{model.title}}<br>
     {% endfor %}
-
+   
+    <a href="{% url 'ML:create' %}">[새모델 등록]</a>
  {% endblock %}

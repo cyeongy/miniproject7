@@ -26,4 +26,8 @@ class Test_ML_Model(TestCase):
         self.assertEqual(test.name, 'test_model')
         print(test.created)
         print(test.file.path)
+<<<<<<< HEAD
         print(test.file)
+=======
+        print(test.file)
+>>>>>>> bf2cf9e (Update: ML code)
