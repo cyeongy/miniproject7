@@ -8,7 +8,10 @@ class ML_Model(models.Model):
     is_selected = models.BooleanField('IS_SELECTED')
     date_published = models.DateField('DATE_PUBLISHED', auto_now_add=True)
     model_file = models.FileField('MODEL_FILE', upload_to='models/')
-
+    # 받아와야함
+    # total=models.IntegerField('TOTAL')
+    # success=models.IntegerField('SUCCESS') 
+    # percentage=models.FloatField('PERCENTAGE')
     class Meta:
         ordering = ('id',)
 
