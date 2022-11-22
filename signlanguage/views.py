@@ -25,6 +25,8 @@ def upload(request):
         #todo form에서 전송한 파일을 획득한다.
         file = request.FILES['files']
         print('file >> ',file)
+        print('file length >> ',len(file))
+        
         logger.error('file', file)
         
         fs = FileSystemStorage(location='media/tmp', base_url='media/tmp')
@@ -66,8 +68,9 @@ def upload(request):
         
         result = Result()
         # result.answer =model.predict(axis=)
-        result.answer = request.POST.get('answer','')
-        print("fs.url(filename) >> ",fs.url(filename))
+        result.answers = request.POST.get('answers','')
+        print('answers >> ', len(result.answers))
+        print("fs.url(filename) >> ",fs.url(filename)[0])
         result.image = file
         result.pub_date = timezone.datetime.now()
         result.save()
