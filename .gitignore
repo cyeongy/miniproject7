@@ -41,3 +41,4 @@ Temporary Items
 # Private key
 *.ppk
 *.pem
+*.sqlite3
