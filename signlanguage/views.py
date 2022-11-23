@@ -8,9 +8,11 @@ import cv2
 import string
 from keras.models import load_model
 from django.core.files.storage import FileSystemStorage
+import joblib
 
 # from pybo.model import Result
 from .models import Result
+from ML.models import *
 
 # Create your views here.
 
@@ -33,8 +35,16 @@ def upload(request):
         # class names 준비 & model 불러오기
         class_names = list(string.ascii_lowercase)
         class_names = np.array(class_names)
-        model_path = settings.MODEL_DIR +'/sign_model.h5'
-        model = load_model(model_path) 
+        # model_path = settings.MODEL_DIR +'/sign_model.h5'
+        ml_model = ML_Model.objects.get(is_selected=True)
+        model_path = ml_model.model_file.path
+        
+        print("ml_model.model_file >> ", model_path)
+        if model_path.split('.')[1] == 'h5':
+            model = load_model(model_path)     
+        else:
+            model = joblib.load(model_path) 
+        
         
         # 파일 저장
         pred2 = []
@@ -55,8 +65,12 @@ def upload(request):
             
             # Predict
             pred = model.predict(img) 
-            print("pred >>> ",pred.argmax(axis=1))
-            pred2.append(pred.argmax(axis=1))
+            
+            if model_path.split('.')[1] == 'h5':            
+                print("pred >>> ",pred.argmax(axis=1))
+                pred2.append(pred.argmax(axis=1))
+            else:
+                pred2.append(pred)
             
             result = Result()
             result.answer = answers[i]
@@ -64,6 +78,9 @@ def upload(request):
             result.pub_date = timezone.datetime.now()
             
             print("result.answer : ",result.answer)
+            
+            # Evaluation 갱신
+            ml_model.evaluate(result.answer, class_names[pred2[i]][0])
             
             if result.answer != class_names[pred2[i]][0]:
                 result.ret = '틀렸습니다!'
