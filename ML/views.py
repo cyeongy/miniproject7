@@ -18,24 +18,13 @@ def list(request):
 def ml_model_create(request):
     if request.method == 'POST':
         form = MakeMLModelForm(request.POST)
-        print(">> ML:create receive POST")
-        print(form)
-        print(request.FILES)
         # try:
         if form.is_valid():
-            print(">>>> ML:create valid form")
-            print(">>>> request.POST")
-            print(request.POST)
-            print(">>>> form.cleaned_data")
-            print(form.cleaned_data)
-            # post=ML_Model.objects.create(**form.cleaned_data)
             ml_model = form.save()
         else:
             print(">> Error")
             print(form.errors)
-        #     pass
-        # except Exception as e:
-        #     print(e)
+
         return redirect ('ML:list')
     else:
         form = MakeMLModelForm()

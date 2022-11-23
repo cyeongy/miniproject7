@@ -12,19 +12,19 @@ class ML_Admin(admin.ModelAdmin):
     
     def changelist_view(self, request, extra_context=None):
         # QuerySet
-        ML_Model.objects.get(pk=1).evalution
+        # chart_data = (
+        #     ML_Model.objects.all().values('id', 'title', 'version').order_by('id')
+        # )   
         
-        chart_data = (
-            ML_Model.objects.all().values('title', 'version').order_by('title')        
-        )   
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>       ", end='')
-        print(chart_data)        
+        chart_data=[]
         
-        # data = ML_Model.objects.all()
-        # as_json = json.dumps(list(data), cls=DjangoJSONEncoder)
-        as_json = json.dumps(list(chart_data), cls=DjangoJSONEncoder)
-
-        
+        for item in ML_Model.objects.all():
+            chart_data.append({
+                'title':item.title, 
+                'accuracy':(item.evaluation.success*100)/(item.evaluation.total) if item.evaluation.total!=0 else 0,
+                })
+            
+        as_json=json.dumps(chart_data,cls=DjangoJSONEncoder)
         extra_context = extra_context or {"chart_data": as_json}
 
         return super().changelist_view(request, extra_context=extra_context)
