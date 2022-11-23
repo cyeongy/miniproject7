@@ -33,14 +33,13 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    
     'blog',
     'account',
     'book',
     'gallery',
     # 'signlanguage'
     'signlanguage.apps.SignlanguageConfig',
-
+    'ML',  #####
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

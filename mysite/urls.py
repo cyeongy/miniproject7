@@ -23,6 +23,7 @@ urlpatterns = [
     path('book/', include('book.urls')),
     path('signlanguage/',include('signlanguage.urls')),
     path('gallery/', include('gallery.urls')),
+    path('ML/',include('ML.urls')), #####
 ]
 
 
