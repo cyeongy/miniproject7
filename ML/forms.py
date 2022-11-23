@@ -11,7 +11,7 @@ class MakeMLModelForm(forms.ModelForm):
 class EvaluationForm(forms.ModelForm):
     class Meta:
         model = Evaluation
-        fields =  ['total', 'success']
+        fields = ['total', 'success']
 
     def clean_total(self):
         total = self.cleaned_data['total']

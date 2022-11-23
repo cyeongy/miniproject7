@@ -41,7 +41,7 @@ class Test_ML_Model(TestCase):
         self.assertEqual(len(ML_Model.objects.all()), 3)
 
     def test_update_모델버전(self):
-        print(">> test_update_모델버전")
+        # print(">> test_update_모델버전")
         test = ML_Model.objects.get(title='test_model1')
         old_version = test.version
         test.version = 1.2
@@ -86,24 +86,34 @@ class Test_Evaluate(TestCase):
         super().tearDownClass()
 
     def test_create_evaluation(self):
-        my_model = ML_Model.objects.get(pk=1)
+        my_model = ML_Model.objects.get(id=1)
         # my_eval = Evaluation.objects.create(ml_model=my_model)
         eval_data = {
             'total': 10,
             'success': 2,
         }
-        print(eval_data)
-        form = EvaluationForm(data=eval_data, instance=my_model)  # , instance=my_eval)
+        # print(eval_data)
+        form = EvaluationForm(data=eval_data, instance=my_model.evaluation)  # , instance=my_eval)
         self.assertTrue(form.is_valid())
         form.save()
-        print(">>> Evalutaion 생성 테스트")
-        my_model = ML_Model.objects.get(pk=1)
-        print(my_model.evaluation)
-        
 
-    # def test_update_evaluation(self):
-    #     my_model = ML_Model
-    #     # form =
-    #     eval_data = {
-    #         'total': 10
-    #     }
+
+    def test_update_evaluation(self):
+        # print(">> test_update_evaluaiton")
+        my_model = ML_Model.objects.get(id=1)
+        my_eval = my_model.evaluation
+
+        # print(f"before: {my_eval.success} / {my_eval.total}")
+        my_model.evaluate(1, 1)
+        self.assertEqual(my_eval.success, 1)
+        self.assertEqual(my_eval.total, 1)
+        my_model.evaluate(1, 2)
+        self.assertEqual(my_eval.success, 1)
+        self.assertEqual(my_eval.total, 2)
+
+        final_model = ML_Model.objects.get(id=1)
+        final_eval = final_model.evaluation
+        # print(f"before: {my_eval.success} / {my_eval.total}")
+        # print(f"before: {final_eval.success} / {final_eval.total}")
+        self.assertEqual(final_eval.success, my_eval.success)
+        self.assertEqual(final_eval.total, my_eval.total)
