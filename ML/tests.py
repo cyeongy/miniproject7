@@ -19,10 +19,13 @@ MEDIA_ROOT = tempfile.mkdtemp()
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class Test_ML_Model(TestCase):
     def setUp(self):
-        test_title = 'test_model'
-        test_mock = mock.MagicMock(spec=File)
-        test_mock.name = 'test_model.h5'
-        my_model = ML_Model.objects.create(title=test_title, model_file=test_mock)
+        # print("\t>>>>>> TEST_ML_MODEL SETUP <<<<<<")
+        for i in range(3):
+            test_title = f'test_model{i+1}'
+            test_mock = mock.MagicMock(spec=File)
+            test_mock.name = f'test_model{i+1}.h5'
+            ML_Model.objects.create(title=test_title, model_file=test_mock)
+        # print("\t>>>>>> TEST_ML_MODEL SETUP <<<<<<")
 
     @classmethod
     def tearDownClass(cls):
@@ -31,20 +34,38 @@ class Test_ML_Model(TestCase):
             super().tearDownClass()
 
     def test_create_모델(self):
-        test = ML_Model.objects.get(title='test_model')
-        self.assertEqual(test.title, 'test_model')
+        test = ML_Model.objects.get(title='test_model1')
+        self.assertEqual(test.title, 'test_model1')
         self.assertEqual(test.version, 1.0)
         self.assertEqual(test.date_published, datetime.date.today())
+        self.assertEqual(len(ML_Model.objects.all()), 3)
 
     def test_update_모델버전(self):
-        test = ML_Model.objects.get(title='test_model')
+        print(">> test_update_모델버전")
+        test = ML_Model.objects.get(title='test_model1')
         old_version = test.version
         test.version = 1.2
-
         test.save()
 
-        test = ML_Model.objects.get(title='test_model')
+        test = ML_Model.objects.get(title='test_model1')
         self.assertNotEqual(test.version, old_version)
+
+    def test_update_모델선택(self):
+        # print(">> test_udpate_model_version")
+        model = ML_Model.objects.get(pk=1)
+        model.is_selected = True
+        model.save()#update_fields=['is_selected'])
+
+        model = ML_Model.objects.get(pk=2)
+        model.is_selected = True
+        model.save()
+
+        self.assertEqual(len(ML_Model.objects.filter(is_selected=True)), 1)
+        pass
+
+    # def test_update_모든버전(self):
+    #     print(f">> test_update_모든버전")
+    #     ML_Model.objects.update(is_selected=False)
 
 
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
@@ -59,7 +80,6 @@ class Test_Evaluate(TestCase):
         test_mock.name = 'test_model.h5'
         my_model = ML_Model.objects.create(title=test_title, model_file=test_mock)
 
-
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
@@ -73,11 +93,10 @@ class Test_Evaluate(TestCase):
             'success': 2,
         }
         print(eval_data)
-        form = EvaluationForm(data=eval_data, instance=my_model) #, instance=my_eval)
+        form = EvaluationForm(data=eval_data, instance=my_model)  # , instance=my_eval)
         form.save()
         print(">>>", my_model.evaluation)
         self.assertTrue(form.is_valid())
-
 
     def test_update_evaluation(self):
         my_model = ML_Model

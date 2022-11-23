@@ -15,6 +15,16 @@ class ML_Model(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, * args, ** kwargs):
+        # print(">> save method")
+        # for k, v in kwargs.items():
+        #     print(k, v)
+        if self.is_selected:
+            # print(ML_Model.objects.filter(is_selected=True))
+            ML_Model.objects.filter(is_selected=True).update(is_selected=False)
+
+        super().save(* args, ** kwargs)
+
 
 class Evaluation(models.Model):
     ml_model = models.OneToOneField(to=ML_Model, on_delete=models.CASCADE)
