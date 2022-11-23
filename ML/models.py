@@ -7,7 +7,8 @@ class ML_Model(models.Model):
     version = models.FloatField('VERSION', default=1.0)
     is_selected = models.BooleanField('IS_SELECTED', default=False)
     date_published = models.DateField('DATE_PUBLISHED', auto_now_add=True)
-    model_file = models.FileField('MODEL_FILE', upload_to='models/')
+    model_file = models.FileField('MODEL_FILE', upload_to='models/',blank=True)
+    
 
     class Meta:
         ordering = ('id',)
@@ -30,3 +31,6 @@ class Evaluation(models.Model):
     ml_model = models.OneToOneField(to=ML_Model, on_delete=models.CASCADE)
     total = models.IntegerField('TOTAL', default=0)
     success = models.IntegerField('SUCCESS', default=0)
+    
+    def __str__(self) -> str:
+        return self.ml_model.__str__()
