@@ -94,13 +94,16 @@ class Test_Evaluate(TestCase):
         }
         print(eval_data)
         form = EvaluationForm(data=eval_data, instance=my_model)  # , instance=my_eval)
-        form.save()
-        print(">>>", my_model.evaluation)
         self.assertTrue(form.is_valid())
+        form.save()
+        print(">>> Evalutaion 생성 테스트")
+        my_model = ML_Model.objects.get(pk=1)
+        print(my_model.evaluation)
+        
 
-    def test_update_evaluation(self):
-        my_model = ML_Model
-        # form =
-        eval_data = {
-            'total': 10
-        }
+    # def test_update_evaluation(self):
+    #     my_model = ML_Model
+    #     # form =
+    #     eval_data = {
+    #         'total': 10
+    #     }

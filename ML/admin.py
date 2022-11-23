@@ -12,6 +12,8 @@ class ML_Admin(admin.ModelAdmin):
     
     def changelist_view(self, request, extra_context=None):
         # QuerySet
+        ML_Model.objects.get(pk=1).evalution
+        
         chart_data = (
             ML_Model.objects.all().values('title', 'version').order_by('title')        
         )   
