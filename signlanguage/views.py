@@ -19,7 +19,13 @@ from ml.models import *
 logger = logging.getLogger('mylogger')
 
 def index(request):
-    return render(request, 'language/index.html')
+        ml_model = ML_Model.objects.get(is_selected=True)
+        print('ml_model.title ',ml_model.title)
+        if ml_model.title != '':
+            context = {
+                'selectedModel' : ml_model.title
+            }
+        return render(request, 'language/index.html',context)
 
 def upload(request):
     if request.method == 'POST' and request.FILES:
