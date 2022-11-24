@@ -12,7 +12,7 @@ import joblib
 
 # from pybo.model import Result
 from .models import Result
-from ML.models import *
+from ml.models import *
 
 # Create your views here.
 
