@@ -16,16 +16,42 @@ def list(request):
 
 
 def ml_model_create(request):
-    if request.method == 'POST':
-        form = MakeMLModelForm(request.POST)
-        # try:
-        if form.is_valid():
-            ml_model = form.save()
+    if request.method == 'POST' and request.FILES:
+        # form = MakeMLModelForm(request.POST)
+        # title', 'version', 'is_selected', 'model_file'
+        ml_model = ML_Model()        
+        file = request.FILES.getlist('files')
+        ml_model.title = request.POST.get('title')
+        ml_model.version = request.POST.get('version')
+        
+        print("form >>>> ", request.POST.get('title'))
+        print("form >>>> ", request.POST.get('version'))
+        print("form >>>> ", request.POST.get('is_selected'))
+        # print('files >> ',file)
+        print('file length >> ',len(file))
+        print('file[0] >> ',file[0])
+       
+        fs = FileSystemStorage(location='media/models', base_url='media/models')
+        fs.save(file[0].name, file[0])
+            
+        
+        if request.POST.get('is_selected') =='on':
+            ml_model.is_selected = 1
         else:
-            print(">> Error")
-            print(form.errors)
+            ml_model.is_selected = 0
+        
+        ml_model.model_file = file[0]
+        
+        ml_model.save()
+        # if form.is_valid():
+        #     print('aaaa')
+        #     # ml_model = form.save()
+        # else:
+        #     print(">> Error")
+        #     print(form.errors)
 
         return redirect ('ml:list')
     else:
+        print('bbbb')
         form = MakeMLModelForm()
         return render(request, 'ml/ml_model_form.html', {'form': form})

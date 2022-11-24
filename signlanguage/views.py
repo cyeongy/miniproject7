@@ -25,7 +25,12 @@ def index(request):
             context = {
                 'selectedModel' : ml_model.title
             }
+        else:
+            context = {
+                'selectedModel' : ''
+            }
         return render(request, 'language/index.html',context)
+        # return render(request, 'language/index.html')
 
 def upload(request):
     if request.method == 'POST' and request.FILES:
@@ -71,7 +76,6 @@ def upload(request):
             
             img = cv2.resize(img, (28,28))
             img = img/255.
-            # print("222 >>> ", img)     
             
             result = Result()
             result.answer = answers[i]
@@ -106,21 +110,9 @@ def upload(request):
                 # Evaluation 갱신
                 ml_model.evaluate(result.answer, class_names[int(pred2[i][0][0])][0])
             
-            # result = Result()
-            # result.answer = answers[i]
-            # result.image = file[i]
-            # result.pub_date = timezone.datetime.now()
-            
+    
             print("result.answer : ",result.answer)
-            
-            # Evaluation 갱신
-            # ml_model.evaluate(result.answer, class_names[pred2[i]][0])
-            
-            # if result.answer != class_names[int(pred2[i][0][0])][0]:
-            #     result.ret = '틀렸습니다!'
-            # else:  
-            #     result.ret = '맞았습니다!'
-            # result.result = class_names[int(pred2[i][0][0])][0]
+    
             result.save()
             resultList.append(result)
             
