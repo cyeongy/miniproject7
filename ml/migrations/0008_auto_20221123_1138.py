@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ML', '0007_remove_ml_model_file'),
+        ('ml', '0007_remove_ml_model_file'),
     ]
 
     operations = [
@@ -22,12 +22,12 @@ class Migration(migrations.Migration):
             field=models.FloatField(default=1.0, verbose_name='VERSION'),
         ),
         migrations.CreateModel(
-            name='Evaluation',
+            name='evaluation',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('total', models.IntegerField(default=0, verbose_name='TOTAL')),
                 ('success', models.IntegerField(default=0, verbose_name='SUCCESS')),
-                ('ml_model', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='ML.ml_model')),
+                ('ml_model', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='ml.ml_model')),
             ],
         ),
     ]

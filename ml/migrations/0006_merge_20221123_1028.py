@@ -6,8 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ML', '0003_alter_ml_model_file'),
-        ('ML', '0005_alter_ml_model_options'),
+        ('ml', '0003_alter_ml_model_file'),
+        ('ml', '0005_alter_ml_model_options'),
     ]
 
     operations = [
