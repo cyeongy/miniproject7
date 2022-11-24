@@ -19,8 +19,12 @@
       <div class="row justify-content-center">
         <div class="col-lg-5 col-md-6">
           <h1 class="text-white">
-            <a class="text-white"
-               href="/signlanguage">수어 이미지 분석 결과</a>
+            수어 이미지 분석 결과<br>
+           {% if selectedModel %} : 분석 모델 : {{ selectedModel }}{% endif %}
+
+
+            {% comment %} <a class="text-white"
+               href="/signlanguage">수어 이미지 분석 결과</a> {% endcomment %}
           </h1>
         </div>
       </div>

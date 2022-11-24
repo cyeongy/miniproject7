@@ -35,14 +35,17 @@ def upload(request):
         # class names 준비 & model 불러오기
         class_names = list(string.ascii_lowercase)
         class_names = np.array(class_names)
-        # model_path = settings.MODEL_DIR +'/sign_model.h5'
+        
+        # model_path = settings.MODEL_DIR +'/rf_pickle.pickle'
         ml_model = ML_Model.objects.get(is_selected=True)
         model_path = ml_model.model_file.path
-        
+        print("ml_model >> ",ml_model.title)
         print("ml_model.model_file >> ", model_path)
         if model_path.split('.')[1] == 'h5':
+            print("aaaaa")
             model = load_model(model_path)     
         else:
+            print("bbbbbb")
             model = joblib.load(model_path) 
         
         
@@ -57,36 +60,61 @@ def upload(request):
             print('el : ', el)
             print('filename : ',filename)
             
-            # Upload Image 전처리
             img = cv2.imread(fs.url(filename), cv2.IMREAD_GRAYSCALE)
+            print("111 >>> ", img)                 
+            
             img = cv2.resize(img, (28,28))
-            img = img.reshape(1,28,28,1)
             img = img/255.
-            
-            # Predict
-            pred = model.predict(img) 
-            
-            if model_path.split('.')[1] == 'h5':            
-                print("pred >>> ",pred.argmax(axis=1))
-                pred2.append(pred.argmax(axis=1))
-            else:
-                pred2.append(pred)
+            # print("222 >>> ", img)     
             
             result = Result()
             result.answer = answers[i]
             result.image = file[i]
             result.pub_date = timezone.datetime.now()
+                        
+            if model_path.split('.')[1] == 'h5':            
+                # Upload Image 전처리
+                img = img.reshape(1,28,28,1)
+                pred = model.predict(img) 
+                pred2.append(pred.argmax(axis=1))
+                
+                if result.answer != class_names[pred2[i][0]][0]:
+                    result.ret = '틀렸습니다!'
+                else:  
+                    result.ret = '맞았습니다!'
+                result.result = class_names[pred2[i][0]][0]
+                
+                # Evaluation 갱신
+                ml_model.evaluate(result.answer, class_names[pred2[i][0]][0])
+            
+            else:
+                img = img.reshape(-1,784)
+                pred = model.predict(img) 
+                pred2.append(pred)
+                if result.answer != class_names[int(pred2[i][0][0])][0]:
+                    result.ret = '틀렸습니다!'
+                else:  
+                    result.ret = '맞았습니다!'
+                result.result = class_names[int(pred2[i][0][0])][0]
+
+                # Evaluation 갱신
+                ml_model.evaluate(result.answer, class_names[int(pred2[i][0][0])][0])
+            
+            # result = Result()
+            # result.answer = answers[i]
+            # result.image = file[i]
+            # result.pub_date = timezone.datetime.now()
             
             print("result.answer : ",result.answer)
             
             # Evaluation 갱신
-            ml_model.evaluate(result.answer, class_names[pred2[i]][0])
+            # ml_model.evaluate(result.answer, class_names[pred2[i]][0])
             
-            if result.answer != class_names[pred2[i]][0]:
-                result.ret = '틀렸습니다!'
-            else:  
-                result.ret = '맞았습니다!'
-            result.result = class_names[pred2[i]][0]
+            # if result.answer != class_names[int(pred2[i][0][0])][0]:
+            #     result.ret = '틀렸습니다!'
+            # else:  
+            #     result.ret = '맞았습니다!'
+            # result.result = class_names[int(pred2[i][0][0])][0]
             result.save()
             resultList.append(result)
             
@@ -95,6 +123,7 @@ def upload(request):
     
         context = {
             'resultList': resultList,
+            'selectedModel' : ml_model.title
         }
 
     
