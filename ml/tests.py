@@ -65,7 +65,7 @@ class Test_ML_Model(TestCase):
 
     # def test_update_모든버전(self):
     #     print(f">> test_update_모든버전")
-    #     ML_Model.objects.update(is_selected=False)
+    #     ml_model.objects.update(is_selected=False)
 
 
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
@@ -87,7 +87,7 @@ class Test_Evaluate(TestCase):
 
     def test_create_evaluation(self):
         my_model = ML_Model.objects.get(id=1)
-        # my_eval = Evaluation.objects.create(ml_model=my_model)
+        # my_eval = evaluation.objects.create(ml_model=my_model)
         eval_data = {
             'total': 10,
             'success': 2,

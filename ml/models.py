@@ -20,7 +20,7 @@ class ML_Model(models.Model):
         # for k, v in kwargs.items():
         #     print(k, v)
         if self.is_selected:
-            # print(ML_Model.objects.filter(is_selected=True))
+            # print(ml_model.objects.filter(is_selected=True))
             ML_Model.objects.filter(is_selected=True).update(is_selected=False)
 
         super().save(*args, **kwargs)

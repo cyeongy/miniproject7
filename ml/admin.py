@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ML.models import ML_Model, Evaluation
+from ml.models import ML_Model, Evaluation
 ## 안쓰는 모듈 지우기
 import json
 from django.core.serializers.json import DjangoJSONEncoder
@@ -15,7 +15,7 @@ class ML_Admin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         # QuerySet
         # chart_data = (
-        #     ML_Model.objects.all().values('id', 'title', 'version').order_by('id')
+        #     ml_model.objects.all().values('id', 'title', 'version').order_by('id')
         # )
 
         chart_data = []
@@ -44,7 +44,7 @@ class Evaluation_Admin(admin.ModelAdmin):
         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>       ", end='')
         print(chart_data)
 
-        # data = ML_Model.objects.all()
+        # data = ml_model.objects.all()
         # as_json = json.dumps(list(data), cls=DjangoJSONEncoder)
         as_json = json.dumps(list(chart_data), cls=DjangoJSONEncoder)
 

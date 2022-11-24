@@ -21,11 +21,10 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('account/', include('account.urls')),
     path('book/', include('book.urls')),
-    path('signlanguage/',include('signlanguage.urls')),
+    path('signlanguage/', include('signlanguage.urls')),
     path('gallery/', include('gallery.urls')),
-    path('ML/',include('ML.urls')), #####
+    path('ml/', include('ml.urls')),  #####
 ]
-
 
 from django.conf import settings
 from django.conf.urls.static import static

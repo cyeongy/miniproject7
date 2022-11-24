@@ -12,7 +12,7 @@ logger = logging.getLogger('mylogger')
 
 def list(request):
     model_list = ML_Model.objects.all()
-    return render(request, 'ML/list.html', {'model_all': model_list})
+    return render(request, 'ml/list.html', {'model_all': model_list})
 
 
 def ml_model_create(request):
@@ -25,7 +25,7 @@ def ml_model_create(request):
             print(">> Error")
             print(form.errors)
 
-        return redirect ('ML:list')
+        return redirect ('ml:list')
     else:
         form = MakeMLModelForm()
-        return render(request, 'ML/ml_model_form.html', {'form': form})
+        return render(request, 'ml/ml_model_form.html', {'form': form})
